@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#5E6AD2">
+<title>Школьный помощник</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1 id="pageTitle">Сегодня</h1>
+</header>
+
+<main>
+  <div id="installBanner" class="install-banner">
+    📲 Установи как приложение: открой меню браузера → «Добавить на главный экран»
+  </div>
+
+  <!-- ===== СЕГОДНЯ ===== -->
+  <section id="tab-today" class="tab-page active">
+    <div id="hwPending"></div>
+    <div id="hwDoneWrap" style="display:none;">
+      <h2 style="color:var(--text-dim); font-size:14px; margin:16px 0 8px;">Сделано</h2>
+      <div id="hwDone"></div>
+    </div>
+    <div id="hwEmpty" class="empty-state">Пока нет домашек. Нажми «+ Домашка», чтобы добавить первую.</div>
+  </section>
+
+  <!-- ===== ЭКЗАМЕН ===== -->
+  <section id="tab-exam" class="tab-page">
+    <div id="examList"></div>
+    <div id="examEmpty" class="empty-state">Пока нет добавленных экзаменов.</div>
+  </section>
+
+  <!-- ===== СКАНЕР ===== -->
+  <section id="tab-scan" class="tab-page">
+    <div class="scan-buttons">
+      <button class="primary" style="flex:1" onclick="document.getElementById('cameraInput').click()">📷 Камера</button>
+      <button class="secondary" style="flex:1" onclick="document.getElementById('galleryInput').click()">🖼 Галерея</button>
+    </div>
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+    <input type="file" id="galleryInput" accept="image/*" style="display:none">
+    <img id="scanPreview" class="scan-preview">
+    <progress id="ocrProgress"></progress>
+    <div id="ocrStatus" class="ocr-status"></div>
+    <div id="notesList"></div>
+    <div id="notesEmpty" class="empty-state">Сфотографируй страницу учебника — распознанный текст появится здесь.</div>
+  </section>
+
+  <!-- ===== ОЦЕНКИ ===== -->
+  <section id="tab-grades" class="tab-page">
+    <div class="card" style="text-align:center;">
+      <h2 id="avgSubjectLabel">Средний балл (все предметы)</h2>
+      <div class="big-number" id="avgValue">—</div>
+      <button class="secondary" onclick="openCalcSheet()">🧮 Какая оценка нужна?</button>
+    </div>
+    <div id="subjectChips" style="margin-bottom:12px;"></div>
+    <div id="gradesList"></div>
+    <div id="gradesEmpty" class="empty-state">Пока нет оценок.</div>
+  </section>
+</main>
+
+<button class="fab" id="fab" onclick="openAddSheet()">
+  <span id="fabIcon">➕</span><span id="fabLabel">Домашка</span>
+</button>
+
+<nav class="bottom-nav">
+  <button class="active" data-tab="today" onclick="switchTab('today')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Сегодня
+  </button>
+  <button data-tab="exam" onclick="switchTab('exam')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    Экзамен
+  </button>
+  <button data-tab="scan" onclick="switchTab('scan')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="4"/></svg>
+    Сканер
+  </button>
+  <button data-tab="grades" onclick="switchTab('grades')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+    Оценки
+  </button>
+</nav>
+
+<!-- ===== BOTTOM SHEET (форма добавления) ===== -->
+<div class="sheet-backdrop" id="sheetBackdrop" onclick="closeSheetOnBackdrop(event)">
+  <div class="sheet" id="sheetContent"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
